@@ -26,9 +26,9 @@ describe JIRA::Resource::Filter do
       :name => 'Resolved Tickets',
       :description => '',
       :owner => jira_user,
-      :jql => '"Git Repository" ~ jira-ruby AND status = Resolved',
+      :jql => '"Git Repository" ~ jira-ruby-dmg AND status = Resolved',
       :viewUrl => 'https://localhost/secure/IssueNavigator.jspa?mode=hide&requestId=42',
-      :searchUrl => 'https://localhost/rest/api/2/search?jql=%22Git+Repository%22+~+jira-ruby+AND+status+%3D+Resolved',
+      :searchUrl => 'https://localhost/rest/api/2/search?jql=%22Git+Repository%22+~+jira-ruby-dmg+AND+status+%3D+Resolved',
       :favourite => false,
       :sharePermissions => [
         {

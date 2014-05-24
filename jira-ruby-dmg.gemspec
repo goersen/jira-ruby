@@ -3,15 +3,15 @@ $:.push File.expand_path("../lib", __FILE__)
 require "jira/version"
 
 Gem::Specification.new do |s|
-  s.name        = "jira-ruby"
+  s.name        = "jira-ruby-dmg"
   s.version     = JIRA::VERSION
-  s.authors     = ["SUMO Heavy Industries"]
-  s.homepage    = "http://www.sumoheavy.com"
+  s.authors     = ["ThisIs! DMG"]
+  s.homepage    = "http://www.thisisdmg.com"
   s.summary     = %q{Ruby Gem for use with the Atlassian JIRA REST API}
   s.description = %q{API for JIRA}
   s.licenses    = ["OSL-3.0"]
 
-  s.rubyforge_project = "jira-ruby"
+  s.rubyforge_project = "jira-ruby-dmg"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
