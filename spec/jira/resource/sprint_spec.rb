@@ -4,7 +4,7 @@ describe JIRA::Resource::Sprint do
 
   let(:client) { double("client", :options => {
                           :rest_base_path => '/jira/rest/api/2',
-                          :site => 'https://thisisdmg.atlassian.net'
+                          :site => 'https://example.com'
                         })
   }
 
@@ -51,7 +51,7 @@ describe JIRA::Resource::Sprint do
       issue_factory = double("issue factory")
 
       client.should_receive(:get)
-        .with('https://thisisdmg.atlassian.net/rest/greenhopper/1.0/xboard/work/allData/?rapidViewId=42')
+        .with('https://example.com/rest/greenhopper/1.0/xboard/work/allData/?rapidViewId=42')
         .and_return(response)
       client.should_receive(:Issue).and_return(issue_factory)
       issue_factory.should_receive(:build)
