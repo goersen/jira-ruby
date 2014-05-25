@@ -10,6 +10,7 @@ module JIRA
       has_many :components
       has_many :issuetypes, :attribute_key => 'issueTypes'
       has_many :versions
+      has_many :sprints
 
       def self.key_attribute
         :key
