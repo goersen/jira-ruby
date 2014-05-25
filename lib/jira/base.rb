@@ -98,9 +98,8 @@ module JIRA
       if collection_attributes_are_nested
         json = json[endpoint_name.pluralize]
       end
-      json.map do |attrs|
-        self.new(client, {:attrs => attrs}.merge(options))
-      end
+      
+      self.populate(client, options, json)
     end
 
     # Finds and retrieves a resource with the given ID.
@@ -151,6 +150,12 @@ module JIRA
     # Defaults to :id unless overridden.
     def self.key_attribute
       :id
+    end
+
+    def self.populate(client, options, json)
+      json.map do |attrs|
+        self.new(client, {:attrs => attrs}.merge(options))
+      end
     end
 
     def self.parse_json(string) # :nodoc:
