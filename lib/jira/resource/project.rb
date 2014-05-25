@@ -26,6 +26,16 @@ module JIRA
           client.Issue.build(issue)
         end
       end
+
+      # Returns all sprints for this project
+      def sprints(options={})
+        search_url = client.options[:site] + '/rest/greenhopper/1.0/integration/teamcalendars/sprint/list?jql=project=' + key
+        response = client.get(url_with_query_params(search_url, {}))
+        json = self.class.parse_json(response.body)
+        json['sprints'].map do |sprint|
+          client.Sprint.build(sprint)
+        end
+      end
     end
   end
 end
