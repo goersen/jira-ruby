@@ -129,6 +129,14 @@ module JIRA
       JIRA::Resource::SprintFactory.new(self)
     end
 
+    def Agileboard # :nodoc:
+      JIRA::Resource::AgileboardFactory.new(self)
+    end
+
+    def Velocity # :nodoc:
+      JIRA::Resource::VelocityFactory.new(self)
+    end
+
     # HTTP methods without a body
     def delete(path, headers = {})
       request(:delete, path, nil, merge_default_headers(headers))
