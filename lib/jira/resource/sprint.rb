@@ -26,7 +26,23 @@ module JIRA
           /rapidView=(\d+)&/.match(error.response['location'])[1]
         end
       end
-    end
 
+      def velocity=(velocity)
+        @attrs["velocity"] = velocity
+      end
+
+      def velocity
+        unless attrs.keys.include? "velocity"
+          @attrs["velocity"] = client.Velocity.build({
+            "sprint_id" => id,
+            "estimated" => 0,
+            "completed" => 0
+          })
+        end
+
+        @attrs["velocity"]
+      end
+
+    end
   end
 end

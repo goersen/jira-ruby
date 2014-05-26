@@ -24,7 +24,9 @@ module JIRA
 
       # get all issues of agile board
       def issues
-        search_url = client.options[:site] + '/rest/greenhopper/1.0/xboard/work/allData/?rapidViewId=' + attrs['id']
+        search_url = client.options[:site] + 
+                     '/rest/greenhopper/1.0/xboard/work/allData/?rapidViewId=' + attrs['id'].to_s
+
         response = client.get(search_url)
         json = self.class.parse_json(response.body)
         json['issues'].map do |issue|
@@ -34,11 +36,15 @@ module JIRA
 
       # get all sprints of agile board
       def sprints
-        search_url = client.options[:site] + 'https://thisisdmg.atlassian.net/rest/greenhopper/1.0/sprintquery/' + attrs['id']
+        search_url = client.options[:site] + '/rest/greenhopper/1.0/sprintquery/' + attrs['id'].to_s
         response = client.get(search_url)
         json = self.class.parse_json(response.body)
-        json['issues'].map do |issue|
-          client.Sprint.build(issue)
+
+        vels = velocities
+        json['sprints'].map do |sprint|
+          velocity = vels.select { |vel| vel.sprint_id.to_s == sprint["id"].to_s }.first
+          sprint["velocity"] = velocity
+          client.Sprint.build(sprint)
         end
       end
 
