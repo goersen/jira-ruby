@@ -48,6 +48,7 @@ module JIRA
         end
       end
 
+      # get velocities of agile board
       def velocities
         search_url = client.options[:site] + 
                      '/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId=' + id.to_s
@@ -67,7 +68,7 @@ module JIRA
           })
         end
       end
+      
     end
-
   end
 end

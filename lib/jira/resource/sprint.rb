@@ -23,7 +23,10 @@ module JIRA
             return
           end
 
-          /rapidView=(\d+)&/.match(error.response['location'])[1]
+          rapid_view_match = /rapidView=(\d+)&/.match(error.response['location'])
+          if rapid_view_match != nil
+            return rapid_view_match[1]
+          end
         end
       end
 
@@ -33,14 +36,44 @@ module JIRA
 
       def velocity
         unless attrs.keys.include? "velocity"
-          @attrs["velocity"] = client.Velocity.build({
-            "sprint_id" => id,
-            "estimated" => 0,
-            "completed" => 0
-          })
+          @attrs["velocity"] = get_velocity
         end
 
         @attrs["velocity"]
+      end
+
+      private
+      def get_velocity
+        search_url = client.options[:site] + 
+                     '/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId=' + agileboard_id.to_s
+        begin
+          response = client.get(search_url).body
+        rescue
+          return empty_velocity
+        end
+
+        json = self.class.parse_json(response)
+        resultVelocity = json['velocityStatEntries'].select do |sprint_id|
+          sprint_id.to_i == id.to_i
+        end
+        
+        if resultVelocity.length == 0
+          return empty_velocity
+        end
+
+        client.Velocity.build({
+          "sprint_id" => id,
+          "estimated" => resultVelocity[id.to_s]['estimated']['value'],
+          "completed" => resultVelocity[id.to_s]['completed']['value']
+        })
+      end
+
+      def empty_velocity
+        client.Velocity.build({
+          "sprint_id" => id,
+          "estimated" => 0,
+          "completed" => 0
+        })
       end
 
     end
