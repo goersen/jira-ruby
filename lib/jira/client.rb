@@ -50,7 +50,9 @@ module JIRA
       :rest_base_path     => "/rest/api/2",
       :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
       :use_ssl            => true,
-      :auth_type          => :oauth
+      :auth_type          => :oauth,
+      :enable_caching     => false,
+      :cache_ttl          => 86400000 # 1 day
     }
 
     def initialize(options={})
@@ -65,6 +67,8 @@ module JIRA
       when :basic
         @request_client = HttpClient.new(@options)
       end
+
+      @cache = JIRA::RequestCache.new(@options[:cache_ttl])
 
       @options.freeze
     end
@@ -143,8 +147,24 @@ module JIRA
     end
 
     def get(path, headers = {})
-      request(:get, path, nil, merge_default_headers(headers))
+      if @options[:enable_caching]
+        get_from_cache(path, headers)
+      else
+        request(:get, path, nil, merge_default_headers(headers))
+      end
     end
+
+    def get_from_cache(path, headers)
+      response = @cache.load(path)
+
+      if response == nil
+        response = request(:get, path, nil, merge_default_headers(headers))
+        @cache.save(path, response)
+      end
+
+      response
+    end
+
 
     def head(path, headers = {})
       request(:head, path, nil, merge_default_headers(headers))

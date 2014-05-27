@@ -28,6 +28,7 @@ require 'jira/resource/issue'
 require 'jira/resource/field'
 require 'jira/resource/agileboard'
 
+require 'jira/request_cache'
 require 'jira/request_client'
 require 'jira/oauth_client'
 require 'jira/http_client'
