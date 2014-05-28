@@ -29,7 +29,7 @@ module JIRA
         'timestamp' => now
       }
 
-      cache_file(uri, 'w+').write(Marshal.dump(new_cache))
+      cache_file(uri, 'w+b').write(Marshal.dump(new_cache))
     end
 
 
@@ -49,7 +49,7 @@ module JIRA
 
     def cache(uri)
       if File.exists? cache_path(uri)
-        Marshal.restore(cache_file(uri, 'r+').read())
+        Marshal.restore(cache_file(uri, 'r+b').read())
       else
         {}
       end
