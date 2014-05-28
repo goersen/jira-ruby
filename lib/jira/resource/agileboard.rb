@@ -47,27 +47,6 @@ module JIRA
           client.Sprint.build(sprint)
         end
       end
-
-      # get velocities of agile board
-      def velocities
-        search_url = client.options[:site] + 
-                     '/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId=' + id.to_s
-
-        begin
-          response = client.get(search_url)
-        rescue
-          return []
-        end
-
-        json = self.class.parse_json(response.body)
-        json['velocityStatEntries'].map do |velocity|
-          client.Velocity.build({
-            "sprint_id" => velocity[0],
-            "estimated" => velocity[1]['estimated']['value'],
-            "completed" => velocity[1]['completed']['value']
-          })
-        end
-      end
       
     end
   end

@@ -30,50 +30,18 @@ module JIRA
         end
       end
 
-      def velocity=(velocity)
-        @attrs["velocity"] = velocity
-      end
-
-      def velocity
-        unless attrs.keys.include? "velocity"
-          @attrs["velocity"] = get_velocity
+      def sprint_report
+        if @sprint_report
+          return @sprint_report
         end
 
-        @attrs["velocity"]
-      end
+        search_url = client.options[:site] + "/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=" + 
+                     agileboard_id.to_s + "&sprintId=" + id.to_s
 
-      private
-      def get_velocity
-        search_url = client.options[:site] + 
-                     '/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId=' + agileboard_id.to_s
-        begin
-          response = client.get(search_url).body
-        rescue
-          return empty_velocity
-        end
+        response = client.get(search_url)
+        json = self.class.parse_json(response.body)
 
-        json = self.class.parse_json(response)
-        resultVelocity = json['velocityStatEntries'].select do |sprint_id|
-          sprint_id.to_i == id.to_i
-        end
-        
-        if resultVelocity.length == 0
-          return empty_velocity
-        end
-
-        client.Velocity.build({
-          "sprint_id" => id,
-          "estimated" => resultVelocity[id.to_s]['estimated']['value'],
-          "completed" => resultVelocity[id.to_s]['completed']['value']
-        })
-      end
-
-      def empty_velocity
-        client.Velocity.build({
-          "sprint_id" => id,
-          "estimated" => 0,
-          "completed" => 0
-        })
+        client.SprintReport.build(json['contents'])
       end
 
     end

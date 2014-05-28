@@ -137,8 +137,8 @@ module JIRA
       JIRA::Resource::AgileboardFactory.new(self)
     end
 
-    def Velocity # :nodoc:
-      JIRA::Resource::VelocityFactory.new(self)
+    def SprintReport # :nodoc:
+      JIRA::Resource::SprintReportFactory.new(self)
     end
 
     # HTTP methods without a body
