@@ -6,30 +6,30 @@ module JIRA
       @time_to_live = time_to_live
     end
 
-    def load(path)
-      key = cache_key(path)
-      cache_object = cache(path)
+    def load(uri)
+      key = cache_key(uri)
+      cache_object = cache(uri)
       response = verify cache_object[key]
 
       if response == :expired
         cache_object.delete(key)
-        cache_file(path, 'w+').write(Marshal.dump(cache_object))
+        cache_file(uri, 'w+').write(Marshal.dump(cache_object))
         nil
       else
         response
       end
     end
 
-    def save(path, response)
+    def save(uri, response)
       now = Time.now.to_i
 
-      new_cache = cache(path)
-      new_cache[cache_key(path)] = {
+      new_cache = cache(uri)
+      new_cache[cache_key(uri)] = {
         'data' => response,
         'timestamp' => now
       }
 
-      cache_file(path, 'w+').write(Marshal.dump(new_cache))
+      cache_file(uri, 'w+').write(Marshal.dump(new_cache))
     end
 
 
@@ -47,33 +47,32 @@ module JIRA
       end
     end
 
-    def cache(path)
-      #binding.pry
-      if File.exists? 'cache/' + path
-        Marshal.restore(cache_file(path, 'r+').read())
+    def cache(uri)
+      if File.exists? cache_path(uri)
+        Marshal.restore(cache_file(uri, 'r+').read())
       else
         {}
       end
     end
 
-    def cache_key(path)
+    def cache_key(uri)
       return "key"
-      #Marshal.dump(path)
+      #Marshal.dump(uri)
     end
 
-    def cache_file(path, mode)
-      dir = cache_dir
-      File.new(dir + '/' + path, mode)
+    def cache_file(uri, mode)
+      path = cache_path(uri)
+      File.new(path, mode)
     end
 
-    def cache_dir
+    def cache_path(uri)
       dir = 'cache'
       
       unless Dir.exists? dir
         FileUtils.mkdir_p(dir)
       end
       
-      dir
+      dir + '/' + uri.gsub('/', '_')
     end
   end
 

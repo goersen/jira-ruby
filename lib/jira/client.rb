@@ -155,11 +155,13 @@ module JIRA
     end
 
     def get_from_cache(path, headers)
-      response = @cache.load(path)
+      cached_response = @cache.load(path)
 
-      if response == nil
+      if cached_response == nil
         response = request(:get, path, nil, merge_default_headers(headers))
-        @cache.save(path, response)
+        @cache.save(path, Marshal.dump(response))
+      else
+        response = Marshal.restore(cached_response)
       end
 
       response

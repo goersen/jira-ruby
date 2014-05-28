@@ -40,10 +40,7 @@ module JIRA
         response = client.get(search_url)
         json = self.class.parse_json(response.body)
 
-        vels = velocities
         json['sprints'].map do |sprint|
-          velocity = vels.select { |vel| vel.sprint_id.to_s == sprint["id"].to_s }.first
-          sprint["velocity"] = velocity
           client.Sprint.build(sprint)
         end
       end
